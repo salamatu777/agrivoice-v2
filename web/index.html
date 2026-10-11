@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriVoice — Voice-First Agricultural Advisory | NAIC 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #15803d;
+            --primary-hover: #166534;
+            --primary-light: #dcfce7;
+            --accent: #ca8a04;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid #a7f3d0;
+            margin-bottom: 16px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 640px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            padding: 32px 28px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 6px;
+            margin-bottom: 24px;
+        }
+
+        .lang-pills {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .lang-pill {
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .record-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .record-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: 4px solid var(--primary-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 15px -3px rgba(21, 128, 61, 0.3);
+        }
+
+        .record-btn:hover {
+            transform: scale(1.05);
+            background: var(--primary-hover);
+        }
+
+        .record-btn.recording {
+            background: var(--danger);
+            border-color: #fee2e2;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        .record-label {
+            margin-top: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .samples-section {
+            margin-top: 24px;
+            border-top: 1px dashed var(--border);
+            padding-top: 20px;
+        }
+
+        .samples-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .samples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+        }
+
+        .sample-btn {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #334155;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .sample-btn:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .output-card {
+            margin-top: 24px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 20px;
+            display: none;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .lang-tag {
+            background: #dcfce7;
+            color: #166534;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .output-section {
+            margin-bottom: 16px;
+        }
+
+        .output-section h4 {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .output-section p {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #1e293b;
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        .spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: 24px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-badge">
+        <span>🇳🇬</span> FMCIDE • NCAIR • NAIC 2026 Innovation Challenge
+    </div>
+
+    <div class="card">
+        <h1 class="title">🌾 AgriVoice</h1>
+        <p class="subtitle">Voice-first agricultural advisory powered by N-ATLAS sovereign AI</p>
+
+        <div class="lang-pills">
+            <span class="lang-pill">Hausa (ha)</span>
+            <span class="lang-pill">Yorùbá (yo)</span>
+            <span class="lang-pill">Igbo (ig)</span>
+            <span class="lang-pill">Nigerian English (en)</span>
+        </div>
+
+        <div class="record-container">
+            <button id="recordBtn" class="record-btn" title="Tap to Speak">🎤</button>
+            <div id="recordLabel" class="record-label">Tap to record question</div>
+        </div>
+
+        <div id="spinner" class="spinner">
+            ⏳ Processing with N-ATLAS (ASR ➔ RAG ➔ LLM ➔ Speech)...
+        </div>
+
+        <div class="samples-section">
+            <div class="samples-title">Or Try A Pre-Recorded Farmer Query</div>
+            <div class="samples-grid">
+                <button class="sample-btn" onclick="sendSampleQuery('Yaya zan magance cutar rogo da ke busar da ganyaye?', 'ha')">
+                    🌿 <b>Hausa</b><br>Cassava Blight
+                </button>
+                <button class="sample-btn" onclick="sendSampleQuery('Kini itoju to ye fun kokoro to n ba agbado je?', 'yo')">
+                    🌽 <b>Yorùbá</b><br>Maize Pests
+                </button>
+                <button class="sample-btn" onclick="sendSampleQuery('Kedu ka m ga-esi chekwaa ji n\'oba ka o ghara ire ure?', 'ig')">
+                    🍠 <b>Igbo</b><br>Yam Storage
+                </button>
+                <button class="sample-btn" onclick="sendSampleQuery('What is the best fertilizer timing for maize farming?', 'en')">
+                    🌱 <b>English</b><br>Fertilizer Timing
+                </button>
+            </div>
+        </div>
+
+        <div id="outputCard" class="output-card">
+            <div class="output-header">
+                <span style="font-weight: 700; font-size: 14px; color: var(--primary);">Advice Received</span>
+                <span id="detectedLang" class="lang-tag">HA</span>
+            </div>
+
+            <div class="output-section">
+                <h4>Farmer Question (Transcribed by N-ATLAS ASR)</h4>
+                <p id="transcriptText">...</p>
+            </div>
+
+            <div class="output-section">
+                <h4>Advisory Response (N-ATLAS Multilingual LLM)</h4>
+                <p id="adviceText" style="white-space: pre-line;">...</p>
+            </div>
+
+            <div class="output-section" id="audioSection">
+                <h4>Voice Response (Audio Out)</h4>
+                <audio id="audioPlayer" controls></audio>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Built with N-ATLAS (Llama-3 8B SFT) & Whisper Small • Licensed under Open-Source Research & Innovation License
+    </footer>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        const recordBtn = document.getElementById('recordBtn');
+        const recordLabel = document.getElementById('recordLabel');
+        const spinner = document.getElementById('spinner');
+        const outputCard = document.getElementById('outputCard');
+
+        recordBtn.addEventListener('click', async () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                recordBtn.classList.remove('recording');
+                recordBtn.textContent = '🎤';
+                recordLabel.textContent = 'Processing recording...';
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = e => { audioChunks.push(e.data); };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob, 'farmer_query.wav');
+                    
+                    showLoading(true);
+                    try {
+                        const response = await fetch('/api/chat', { method: 'POST', body: formData });
+                        const data = await response.json();
+                        displayResult(data);
+                    } catch (err) {
+                        alert('Error communicating with AgriVoice server: ' + err);
+                    } finally {
+                        showLoading(false);
+                        recordLabel.textContent = 'Tap to record question';
+                    }
+                };
+
+                mediaRecorder.start();
+                recordBtn.classList.add('recording');
+                recordBtn.textContent = '⏹';
+                recordLabel.textContent = 'Listening... Tap to finish';
+            } catch (err) {
+                alert('Microphone permission needed to record audio. You can also click one of the quick test sample queries below!');
+            }
+        });
+
+        async function sendSampleQuery(textQuery, lang) {
+            showLoading(true);
+            try {
+                const response = await fetch('/api/chat-text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: textQuery, language: lang })
+                });
+                const data = await response.json();
+                displayResult(data);
+            } catch (err) {
+                alert('Request failed: ' + err);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function showLoading(isLoading) {
+            spinner.style.display = isLoading ? 'block' : 'none';
+            if (isLoading) {
+                outputCard.style.display = 'none';
+            }
+        }
+
+        function displayResult(data) {
+            outputCard.style.display = 'block';
+            document.getElementById('transcriptText').textContent = data.transcript || 'No transcript generated.';
+            document.getElementById('adviceText').textContent = data.advice || 'No advice generated.';
+            document.getElementById('detectedLang').textContent = (data.language || 'EN').toUpperCase();
+            
+            const audioPlayer = document.getElementById('audioPlayer');
+            const audioSection = document.getElementById('audioSection');
+            if (data.audio_url) {
+                audioPlayer.src = data.audio_url;
+                audioSection.style.display = 'block';
+            } else {
+                audioSection.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
